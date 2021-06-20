@@ -31,4 +31,3 @@ systemctl status jeninks
 # Following the following steps on https://xlp.pub/index.php/Jenkins to finish installation.
 echo "Following the following steps (step 7 and later) on https://xlp.pub/index.php/Jenkins to finish installation of Jenkins"
 echo "Before using a browser to access Jenkins, make sure that you first open up port 8080 on that machine."
-
