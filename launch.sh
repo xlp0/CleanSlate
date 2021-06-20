@@ -1,4 +1,7 @@
 #!/bin/sh
+echo Turnning swap off ...
+swapoff -a
+
 echo Launching XLP system based on Kubernetes with master node only...
 echo ====================
 kubeadm init --pod-network-cidr=10.244.0.0/16
