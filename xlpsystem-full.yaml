@@ -1,0 +1,730 @@
+# ========== mariadb ==========
+apiVersion: v1
+kind: Service
+metadata: 
+  name: mariadb
+spec:
+  type: ClusterIP
+  ports:
+  - name: mysql
+    port: 3306
+  selector:
+    type: app
+    sys: xlpsystem
+    app: mariadb
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: 
+  name: xlp-mariadb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      type: app
+      sys: xlpsystem
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        type: app
+        sys: xlpsystem
+        app: mariadb
+    spec:
+      serviceAccountName: xlp-mariadb
+      volumes:
+      - name: pv-data
+        hostPath:
+          path: /data/xlp_k8s/mariadb
+      containers:
+      - name: mariadb-container
+        image: mariadb:10.3
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: pv-data
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: '7870A37959142A5FFC07091E112A9D31'
+        resources:
+          limits:
+            cpu: 300m
+            memory: 1024Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+---
+# ========== mediawiki ==========
+apiVersion: v1
+kind: Service
+metadata:
+  name: mediawiki
+spec:
+  type: NodePort
+  ports:
+  - name: mysql
+    port: 80
+    nodePort: 32001
+  selector:
+    type: app
+    sys: xlpsystem
+    app: mediawiki
+    version: new
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: xlp-mediawiki
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mediawiki
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      type: app
+      sys: xlpsystem
+      app: mediawiki
+      version: new
+  template:
+    metadata:
+      labels:
+        type: app
+        sys: xlpsystem
+        app: mediawiki
+        version: new
+    spec:
+      serviceAccountName: xlp-mediawiki
+      volumes:
+      - name: pv-data
+        hostPath:
+          path: /data/xlp_k8s/mediawiki
+      containers:
+      - name: mediawiki-container
+        image: runtimeerror2/xlpmediawiki:1.33-amd64-basic
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /xlp_wiki
+          name: pv-data
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+          requests:
+            cpu: 200m
+            memory: 256Mi
+---
+# ========== elasticsearch ==========
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+spec:
+  type: ClusterIP
+  ports:
+  - name: outer
+    port: 9200
+  - name: inner
+    port: 9300
+  selector:
+    type: app
+    sys: xlpsystem
+    app: elasticsearch
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: xlp-elasticsearch
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      type: app
+      sys: xlpsystem
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        type: app
+        sys: xlpsystem
+        app: elasticsearch
+    spec:
+      serviceAccountName: xlp-elasticsearch
+      volumes:
+      - name: pv-data
+        hostPath:
+          path: /data/xlp_k8s/elasticsearch
+      containers:
+      - name: elasticsearch-container
+        image: runtimeerror2/xlpelasticsearch:6.5.2-amd64
+        ports:
+        - name: outer
+          containerPort: 9200
+        - name: inner
+          containerPort: 9300
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: pv-data
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 500m
+            memory: 2048Mi
+          requests:
+            cpu: 150m
+            memory: 512Mi
+        #env:
+        #- name: discovery.type
+        #  value: single-node
+        #- name: bootstrap.memory_lock
+        #  value: true
+        #- name: ES_JAVA_OPTS
+        #  value: -Xms512m -Xmx512m
+---
+# ========== kibana ==========
+apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 5601
+    nodePort: 32004
+  selector:
+    type: app
+    sys: xlpsystem
+    app: kibana
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: 
+  name: xlp-kibana
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      type: app
+      sys: xlpsystem
+      app: kibana
+  template:
+    metadata:
+      labels:
+        type: app
+        sys: xlpsystem
+        app: kibana
+    spec:
+      serviceAccountName: xlp-kibana
+      volumes:
+      - name: pv-data
+        hostPath:
+          path: /data/xlp_k8s/kibana
+      containers:
+      - name: kibana-container
+        image: runtimeerror2/xlpkibana:6.5.2-amd64
+        ports:
+        - containerPort: 5601
+        volumeMounts:
+        - mountPath: /usr/share/kibana/data
+          name: pv-data
+          subPath: data
+        - mountPath: /usr/share/kibana/config
+          name: pv-data
+          subPath: config
+        - mountPath: /usr/share/kibana/plugins
+          name: pv-data
+          subPath: plugins
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+---
+# ========== parsoid ==========
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: parsoid
+#spec: 
+#  type: ClusterIP
+#  ports:
+#  - name: http
+#    port: 8000
+#  selector:
+#    type: app
+#    sys: xlpsystem
+#    app: parsoid
+#---
+#apiVersion: v1
+#kind: ServiceAccount
+#metadata:
+#  name: xlp-parsoid
+#---
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: parsoid
+#spec:
+#  replicas: 1
+#  selector:
+#    matchLabels:
+#      type: app
+#      sys: xlpsystem
+#      app: parsoid
+#  template:
+#    metadata:
+#      labels:
+#        type: app
+#        sys: xlpsystem
+#        app: parsoid
+#    spec:
+#      serviceAccountName: xlp-parsoid
+#      containers:
+#      - name: parsoid-container
+#        #image: thenets/parsoid:0.10
+#        image: rlewkowicz/parsoid:latest
+#        ports:
+#        - containerPort: 8000
+#        imagePullPolicy: IfNotPresent
+#        # Should be modified if the domain (Service name) of Mediawiki is changed
+#        env: 
+#        - name: PARSOID_DOMAIN_localhost
+#          value: http://mediawiki/api.php 
+#---
+# ========== Nextcloud ==========
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    nodePort: 32007
+  selector:
+    type: app
+    sys: xlpsystem
+    app: nextcloud
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: xlp-nextcloud
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      type: app
+      sys: xlpsystem
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        type: app
+        sys: xlpsystem
+        app: nextcloud
+    spec:
+      serviceAccountName: xlp-nextcloud
+      volumes:
+      - name: pv-data
+        hostPath:
+          path: /data/xlp_k8s/nextcloud
+      containers:
+      - name: nextcloud-container
+        image: nextcloud:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /var/www/html/data
+          name: pv-data
+          subPath: data
+        - mountPath: /var/www/html/apps
+          name: pv-data
+          subPath: apps
+        - mountPath: /var/www/html/config
+          name: pv-data
+          subPath: config
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 300m
+            memory: 1024Mi
+          requests:
+            cpu: 200m
+            memory: 256Mi
+---
+# ========== Logstash ==========
+apiVersion: v1
+kind: Service
+metadata:
+  name: logstash
+spec:
+  ports:
+  - name: one
+    port: 5000
+  - name: two
+    port: 9600
+  selector:
+    type: app
+    sys: xlpsystem
+    app: logstash
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: xlp-logstash
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logstash
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      type: app
+      sys: xlpsystem
+      app: logstash
+  template:
+    metadata:
+      labels:
+        type: app
+        sys: xlpsystem
+        app: logstash
+    spec:
+      serviceAccountName: xlp-logstash
+      volumes:
+      - name: pv-data
+        hostPath:
+          path: /data/xlp_k8s/logstash
+      containers:
+      - name: logstash-container
+        image: docker.elastic.co/logstash/logstash-oss:6.5.2
+        ports:
+        - name: outer
+          containerPort: 5000
+        - name: inner
+          containerPort: 9600
+        volumeMounts:
+        - mountPath: /usr/share/logstash/config
+          name: pv-data
+          subPath: config
+        - mountPath: /usr/share/logstash/pipeline
+          name: pv-data
+          subPath: pipeline
+        imagePullPolicy: IfNotPresent
+        env: 
+        - name: LS_JAVA_OPTS
+          value: '-Xmx256m -Xms256m'
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+---
+# ========== WordPress ==========
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress
+spec:
+  type: NodePort
+  ports:
+  - name: outer
+    port: 80
+    nodePort: 32003
+  selector:
+    type: app
+    sys: xlpsystem
+    app: wordpress
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: xlp-wordpress
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      type: app
+      sys: xlpsystem
+      app: wordpress
+  template:
+    metadata:
+      labels:
+        type: app
+        sys: xlpsystem
+        app: wordpress
+    spec:
+      serviceAccountName: xlp-wordpress
+      volumes:
+      - name: pv-data
+        hostPath:
+          path: /data/xlp_k8s/wordpress
+      containers:
+      - name: wordpress-container
+        image: wordpress:5.2.2-php7.1-apache
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /var/www/html
+          name: pv-data
+        imagePullPolicy: IfNotPresent
+        env: 
+        - name: WORDPRESS_DB_HOST
+          value: 'mariadb'
+        - name: WORDPRESS_DB_PASSWORD
+          value: '7870A37959142A5FFC07091E112A9D31'
+        resources:
+          limits:
+            cpu: 300m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+---
+# ========== matomo ==========
+apiVersion: v1
+kind: Service
+metadata:
+  name: matomo
+spec:
+  type: NodePort
+  ports:
+  - name: matomo
+    port: 80
+    nodePort: 32002
+  selector:
+    type: app
+    sys: xlpsystem
+    app: matomo
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: xlp-matomo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matomo
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      type: app
+      sys: xlpsystem
+      app: matomo
+  template:
+    metadata:
+      labels:
+        type: app
+        sys: xlpsystem
+        app: matomo
+    spec:
+      serviceAccountName: xlp-matomo
+      volumes:
+      - name: pv-data
+        hostPath:
+          path: /data/xlp_k8s/matomo
+      containers:
+      - name: matomo-container
+        image: matomo:3.11.0-apache
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /var/www/html
+          name: pv-data
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 300m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+---
+# ========== Phabricator ==========
+apiVersion: v1
+kind: Service
+metadata:
+  name: phabricator
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    nodePort: 32005
+  selector:
+    type: app
+    sys: xlpsystem
+    app: phabricator
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: xlp-phabricator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phabricator
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      type: app
+      sys: xlpsystem
+      app: phabricator
+  template:
+    metadata:
+      labels:
+        type: app
+        sys: xlpsystem
+        app: phabricator
+    spec:
+      serviceAccountName: xlp-phabricator
+      volumes:
+      - name: pv-data
+        hostPath:
+          path: /data/xlp_k8s/phabricator
+      containers:
+      - name: phabricator-container
+        image: redpointgames/phabricator
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        - name: ssh
+          containerPort: 22
+        volumeMounts:
+        - mountPath: /repos
+          name: pv-data
+          subPath: repos
+        - mountPath: /data/phabricator/phabricator/src/extensions
+          name: pv-data
+          subPath: extensions
+        - mountPath: /srv/phabricator/phabricator
+          name: pv-data
+          subPath: phabricator
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MYSQL_HOST
+          value: 'mariadb'
+        - name: MYSQL_USER
+          value: 'root'
+        - name: MYSQL_PASS
+          value: '7870A37959142A5FFC07091E112A9D31'
+        - name: PHABRICATOR_REPOSITORY_PATH
+          value: '/repos'
+        - name: PHABRICATOR_HOST
+          value: 'xlp.mit.edu:32005' 
+        - name: ENABLE_APCU
+          value: 'true'
+        resources:
+          limits:
+            cpu: 300m
+            memory: 1024Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+---
+# ========== etherpad ==========
+#apiVersion: v1
+#kind: Service
+#metadata: 
+#  name: etherpad
+#spec:
+#  type: NodePort
+#  ports:
+#  - name: http
+#    port: 9001
+#    nodePort: 32006
+#  selector:
+#    type: app
+#    sys: xlpsystem
+#    app: etherpad
+#---
+#apiVersion: v1
+#kind: ServiceAccount
+#metadata: 
+#  name: xlp-etherpad
+#---
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: etherpad
+#spec:
+#  replicas: 1
+#  selector:
+#    matchLabels:
+#      type: app
+#      sys: xlpsystem
+#      app: etherpad
+#  template:
+#    metadata:
+#      labels:
+#        type: app
+#        sys: xlpsystem
+#        app: etherpad
+#    spec:
+#      serviceAccountName: xlp-etherpad
+#      containers:
+#      - name: etherpad-container
+#        image: tvelocity/etherpad-lite:latest
+#        ports:
+#        - containerPort: 9001
+#        imagePullPolicy: IfNotPresent
+#        env:
+#        - name: ETHERPAD_DB_HOST
+#          value: 'mariadb'
+#        - name: ETHERPAD_DB_PASSWORD
+#          value: '7870A37959142A5FFC07091E112A9D31'
+#        resources:
+#          limits:
+#            cpu: 200m
+#            memory: 512Mi
+#          requests:
+#            cpu: 100m
+#            memory: 128Mi
+
+
