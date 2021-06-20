@@ -1,10 +1,10 @@
 #! /bin/bash
 
-sudo add-apt-repository universe
+add-apt-repository universe
 
-sudo apt-get update -y
+apt-get update -y
 
-sudo apt-get install -y \
+apt-get install -y \
     apt-transport-https \
     ca-certificates \
     curl \
@@ -15,7 +15,7 @@ sudo apt-get install -y \
     cron \
     dos2unix
 
-sudo dos2unix *.sh
+dos2unix *.sh
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
@@ -23,9 +23,11 @@ echo \
   "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-sudo apt-get update -y 
+apt-get update -y 
 
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker.io docker-compose -y 
+apt-get install docker-ce docker-ce-cli containerd.io docker.io docker-compose -y 
+
+apt install docker.io
 
 systemctl daemon-reload
 systemctl restart docker
