@@ -34,7 +34,7 @@ apt-get install -y apt-transport-https
 curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | apt-key add -
 cp ./kubernetes.list /etc/apt/sources.list.d/
 apt-get update
-apt-get install -y kubelet=1.15.0-00 kubeadm=1.15.0-00 kubectl=1.15.0-00
+snap install kubelet kubeadm kubectl
 
 #rm /etc/resolv.conf
 #cp ./resolv.conf /etc/
