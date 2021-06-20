@@ -1,5 +1,9 @@
 # Prerequisites
 *.d
+.DS_Store
+.vscode/
+.vagrant
+vagrant_sandbox/data/xlp_k8s
 
 # Object files
 *.o
