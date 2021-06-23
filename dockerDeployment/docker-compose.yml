@@ -1,0 +1,36 @@
+# MariaDB
+
+version: "3.7"
+services:
+  database:
+    image: mariadb
+    restart: always
+    environment:
+      #entrypoint: mysqld_safe --skip-grant-tables --user=root
+      MYSQL_DATABASE: my_wiki
+      MYSQL_USER: wikiuser
+      MYSQL_PASSWORD: example
+      MYSQL_ROOT_PASSWORD: secret
+    volumes:
+      - ./mountPoint/mariadb:/var/lib/mysql
+    #ports: 
+    # - 3306:3306
+  mediawiki:
+    image: mediawiki
+    #image: runtimeerror2/xlpmediawiki:1.33-amd64-basic
+    restart: always
+    ports:
+    - ${PORT_NUMBER}:80
+    links:
+    - database
+    volumes:
+    - ./mountPoint/images:/var/www/html/images
+    # After initial setup, download LocalSettings.php to the same directory as
+    # this yaml and uncomment the following line and use compose to restart
+    # the mediawiki service
+    - ./LocalSettings.php:/var/www/html/LocalSettings.php
+    - ./backup:/var/www/html/backup
+    depends_on:
+    - database
+  
+  

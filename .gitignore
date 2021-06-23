@@ -5,6 +5,7 @@
 .vscode/
 .vagrant
 vagrant_sandbox/data/xlp_k8s
+*/mountPoint/*
 
 # Object files
 *.o
