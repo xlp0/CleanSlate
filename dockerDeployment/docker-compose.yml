@@ -4,6 +4,7 @@ version: "3.7"
 services:
   database:
     image: mariadb
+    platform: linux/amd64
     restart: always
     environment:
       #entrypoint: mysqld_safe --skip-grant-tables --user=root
@@ -13,11 +14,12 @@ services:
       MYSQL_ROOT_PASSWORD: secret
     volumes:
       - ./mountPoint/mariadb:/var/lib/mysql
+      - ./backup/sql:/home/
     #ports: 
     # - 3306:3306
   mediawiki:
     image: mediawiki
-    #image: runtimeerror2/xlpmediawiki:1.33-amd64-basic
+    platform: linux/amd64
     restart: always
     ports:
     - ${PORT_NUMBER}:80
