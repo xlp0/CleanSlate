@@ -1,5 +1,28 @@
 # CleanSlate docker deployment
-This sub project is designed to have a minimalistic installation.
+This sub project is designed to have a minimalistic MediaWiki docker deployment.
+It follows PKC's (Personal Knowledge Container) convention in mounting backup and mountPoint directories.
+It also allows users to launch the process with just one command line instruction:
+```
+~CleanSlate/dockerDeployment/$ ./up.sh
+```
+
+This sub project also has a Makefile. One may also use the three instructions to trigger scripted actions: They are:
+```
+~CleanSlate/dockerDeployment/$ make init
+```
+
+This is for launching the ./up.sh script. So the behavior is identical to do ./up.sh
+
+The second instruction is:
+```
+~CleanSlate/dockerDeployment/$ make shutdown
+```
+and 
+```
+~CleanSlate/dockerDeployment/$ make removeAllImages
+```
+The detailed behaviors of these two makefile target names can be examined in the Makefile.
+
 
 # Usage Cases
 
