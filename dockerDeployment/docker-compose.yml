@@ -4,6 +4,7 @@ version: "3.7"
 services:
   database:
     image: mariadb
+    platform: linux/amd64
     restart: always
     environment:
       #entrypoint: mysqld_safe --skip-grant-tables --user=root
@@ -13,11 +14,12 @@ services:
       MYSQL_ROOT_PASSWORD: secret
     volumes:
       - ./mountPoint/mariadb:/var/lib/mysql
+      - ./backup/sql:/home/
     #ports: 
     # - 3306:3306
   mediawiki:
     image: mediawiki
-    #image: runtimeerror2/xlpmediawiki:1.33-amd64-basic
+    platform: linux/amd64
     restart: always
     ports:
     - ${PORT_NUMBER}:80
@@ -25,9 +27,10 @@ services:
     - database
     volumes:
     - ./mountPoint/images:/var/www/html/images
-    # After initial setup, download LocalSettings.php to the same directory as
-    # this yaml and uncomment the following line and use compose to restart
-    # the mediawiki service
+    # Following the default MediaWiki installation process, it will first assume that there is no LocalSettings.php in the 
+    # default location, in this case, /var/www/html/. However, after going through the installation procedure that collects information from 
+    # the installation person from a browser, the system will generate a LocalSettings.php, and it should be placed in /var/www/html/.
+    # For convenience, the following long line is a reminder for the procedure: It is recommended to comment out the following line when first install a "fresh" instance of MediaWiki. This statement exclude the situation when one just want to use the default mountPoint content as the fresh data set.
     - ./LocalSettings.php:/var/www/html/LocalSettings.php
     - ./backup:/var/www/html/backup
     depends_on:
