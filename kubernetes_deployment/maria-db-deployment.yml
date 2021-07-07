@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cleanslate-db
+spec:
+  selector:
+    matchLabels:
+      app: cleanslate-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cleanslate-db
+    spec:
+      containers:
+        - name: cleanslate-db-container
+          image: mariadb
+          env:
+            - name: MYSQL_DATABASE
+              value: my_wiki
+            - name: MYSQL_USER
+              value: wikiuser
+            - name: MYSQL_PASSWORD
+              value: example
+            - name: MYSQL_RANDOM_ROOT_PASSWORD
+              value: 'yes'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cleanslate-db-srv
+  labels:
+    app: cleanslate-db
+spec:
+  type: NodePort
+  ports:
+    - port: 3306
+      protocol: TCP
+  selector:
+    app: cleanslate-db
