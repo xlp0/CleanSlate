@@ -41,6 +41,6 @@ spec:
     - port: 80
       protocol: TCP
       targetPort: 80      # target port where server is listening
-      nodePort: 30000
+      nodePort: 30000     # valid port to expose is 30k UP
   selector:
     app: cleanslate-app
