@@ -14,7 +14,7 @@ services:
       MYSQL_ROOT_PASSWORD: secret
     volumes:
       - ./mountPoint/mariadb:/var/lib/mysql
-      - ./backup/sql:/home/
+      - ./backup/mariadb:/home/
     #ports: 
     # - 3306:3306
   mediawiki:
@@ -32,7 +32,7 @@ services:
     # the installation person from a browser, the system will generate a LocalSettings.php, and it should be placed in /var/www/html/.
     # For convenience, the following long line is a reminder for the procedure: It is recommended to comment out the following line when first install a "fresh" instance of MediaWiki. This statement exclude the situation when one just want to use the default mountPoint content as the fresh data set.
     - ./LocalSettings.php:/var/www/html/LocalSettings.php
-    - ./backup:/var/www/html/backup
+    - ./backup/xml:/var/www/html/backup
     depends_on:
     - database
   

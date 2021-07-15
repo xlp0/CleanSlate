@@ -29,7 +29,7 @@ $wgSitename = "Minimalist";
 $wgScriptPath = "";
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = "http://localhost:5320";
+$wgServer = "http://localhost:32001";
 
 ## The URL path to static resources (images, scripts, etc.)
 $wgResourceBasePath = $wgScriptPath;
