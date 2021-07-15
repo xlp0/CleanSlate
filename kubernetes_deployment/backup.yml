@@ -1,0 +1,25 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: mariadb-backup
+spec:
+  schedule: "* 1 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: mariadb-backup
+            image: busybox
+            volumeMounts:
+            - mountPath: /tmp
+              name: cleanslate-volume
+            args:
+            - /bin/sh
+            - -c
+            - mysqldump -h -u wikiuser --password=example my_wiki -c > /tmp/wiki-my_wiki-$(date '+%Y%m%d').sql.gz
+          restartPolicy: OnFailure
+          volumes:
+          - name: cleanslate-volume
+            hostPath:
+              path: /home/docker/mount/backup

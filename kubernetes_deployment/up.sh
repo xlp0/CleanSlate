@@ -1,16 +1,39 @@
 #! /bin/bash
 
-# 
-$LOCAL_FOLDER="/Users/muhammadhaviz/Anindhaloka Drive/2021.07.Personal Knowledge Container/CleanSlate/kubernetes_deployment/mountPoint"
+# Check .env file exists before process
+if [ -f .env ]; then
+    # Calls env files to read environment variables
+    . .env
+   echo "File .env exists, below are the parameters stored"
+   echo "-------------------------------------------------"
+   echo "Local Persistence volume will be mounted from: $LOCAL_FOLDER"
+   echo "Space allocated for cluster is: $LOCAL_STORAGE_SPACE"
+   echo "External IP Address is: $EXTERNAL_IP_ADDRESS"
+   echo "External port number is: $EXPOSED_PORT_NUMBER"
+   echo "-------------------------------------------------"
+   echo ""
+   read -p "Please review the parameter and Press any key to continue or ctrl-C to cancel"
+   echo ""
+   echo ""
+else
+   echo "File .env does not exist, exiting installation"
+   exit 0
+fi
 
-# Must mount from local host to minikube
-# minikube start --mount --mount-string="/Users/muhammadhaviz:/home/docker/mount"
+# Must mount from local host to kube
+echo "Mounting to: $LOCAL_FOLDER:/home/docker/mount"
+minikube start --mount --mount-string="$LOCAL_FOLDER:/home/docker/mount"
 
-# apply database
-# kubectl apply -f clean_slate_deployment.yml
+# create execute yaml file, overwrite if exist
+cp clean_slate.yml clean_slate_exec.yml
 
-# apply apps
-# kubectl apply -f maria-db-deployment.yml
+# Apply .env parameters into yaml file
+# amount of local storage
+sed -i -e 's, LOCAL_STORAGE_SPACE, '$LOCAL_STORAGE_SPACE',g' clean_slate_exec.yml
+# External exposed IP address
+sed -i -e 's, EXTERNAL_IP_ADDRESS, '$EXTERNAL_IP_ADDRESS',g' clean_slate_exec.yml
+# External exposed port number
+sed -i -e 's, EXPOSED_PORT_NUMBER, '$EXPOSED_PORT_NUMBER',g' clean_slate_exec.yml
 
-# start exposing service to external ip
-# minikube service cleanslate-srv
+# apply config files
+kubectl apply -f clean_slate_exec.yml

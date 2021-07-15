@@ -11,13 +11,13 @@ metadata:
   name: local-db-pv
 spec:
   capacity:
-    storage: 1Gi
+    storage: LOCAL_STORAGE_SPACE
   accessModes:
   - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: db-storage
   local:
-    path: /home/docker/mount/mysql
+    path: /home/docker/mount/mariadb
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -131,10 +131,12 @@ metadata:
     app: cleanslate-app
 spec:
   type: LoadBalancer
+  externalIPs:
+  - EXTERNAL_IP_ADDRESS
   ports:
     - port: 80
       protocol: TCP
-      targetPort: 80      # target port where server is listening
-      nodePort: 30000     # valid port to expose is 30k UP
+      targetPort: 80                    # target port where server is listening
+      nodePort: EXPOSED_PORT_NUMBER     # valid port to expose is 30k UP
   selector:
     app: cleanslate-app
