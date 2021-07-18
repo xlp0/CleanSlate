@@ -4,7 +4,7 @@ metadata:
   name: local-db-pv
 spec:
   capacity:
-    storage: LOCAL_STORAGE_SPACE
+    storage: 8Gi
   accessModes:
   - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
@@ -18,4 +18,4 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - minikube
+          - ip-172-31-30-35
