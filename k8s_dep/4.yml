@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cleanslate-db
+spec:
+  selector:
+    matchLabels:
+      app: cleanslate-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cleanslate-db
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 3000
+        fsGroup: 2000
+      containers:
+        - name: cleanslate-db-container
+          image: mariadb
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: cleanslate-db-storage
+          env:
+            - name: MYSQL_DATABASE
+              value: my_wiki
+            - name: MYSQL_USER
+              value: wikiuser
+            - name: MYSQL_PASSWORD
+              value: example
+            - name: MYSQL_RANDOM_ROOT_PASSWORD
+              value: 'yes'
+      volumes:
+        - name: cleanslate-db-storage
+          persistentVolumeClaim:
+            claimName: db-pv-claim
