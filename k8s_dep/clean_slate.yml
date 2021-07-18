@@ -17,7 +17,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: db-storage
   local:
-    path: /home/docker/mount/mariadb
+    path: /home/ubuntu/mount/mariadb
   nodeAffinity:
     required:
       nodeSelectorTerms:
