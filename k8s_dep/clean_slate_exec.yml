@@ -11,13 +11,13 @@ metadata:
   name: local-db-pv
 spec:
   capacity:
-    storage: 1Gi
+    storage: LOCAL_STORAGE_SPACE
   accessModes:
   - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: db-storage
   local:
-    path: /home/docker/mount/mariadb
+    path: /home/ubuntu/mount/mariadb
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -120,7 +120,7 @@ spec:
         - name: cleanslate-volume
         - name: cleanslate-localsettings
           hostPath:
-            path: /home/docker/mount/LocalSettings.php
+            path: /home/ubuntu/mount/LocalSettings.php
             type: File
 ---
 apiVersion: v1
@@ -132,11 +132,11 @@ metadata:
 spec:
   type: LoadBalancer
   externalIPs:
-  - 192.168.1.16
+  - EXTERNAL_IP_ADDRESS
   ports:
     - port: 80
       protocol: TCP
       targetPort: 80                    # target port where server is listening
-      nodePort: 30000     # valid port to expose is 30k UP
+      nodePort: EXPOSED_PORT_NUMBER     # valid port to expose is 30k UP
   selector:
     app: cleanslate-app

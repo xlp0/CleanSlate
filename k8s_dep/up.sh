@@ -21,8 +21,8 @@ else
 fi
 
 # Must mount from local host to kube
-echo "Mounting to: $LOCAL_FOLDER:/home/docker/mount"
-minikube start --mount --mount-string="$LOCAL_FOLDER:/home/docker/mount"
+# echo "Mounting to: $LOCAL_FOLDER:/home/docker/mount"
+# minikube start --mount --mount-string="$LOCAL_FOLDER:/home/docker/mount"
 
 # create execute yaml file, overwrite if exist
 cp clean_slate.yml clean_slate_exec.yml
