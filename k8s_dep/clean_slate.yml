@@ -120,7 +120,7 @@ spec:
         - name: cleanslate-volume
         - name: cleanslate-localsettings
           hostPath:
-            path: /home/docker/mount/LocalSettings.php
+            path: /home/ubuntu/mount/LocalSettings.php
             type: File
 ---
 apiVersion: v1
