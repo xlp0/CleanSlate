@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cleanslate-srv
+  labels:
+    app: cleanslate-app
+spec:
+  type: LoadBalancer
+  externalIPs:
+  - 192.168.1.16
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80      # target port where server is listening
+      nodePort: 30000     # valid port to expose is 30k UP
+  selector:
+    app: cleanslate-app
