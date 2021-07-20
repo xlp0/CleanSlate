@@ -12,13 +12,15 @@ spec:
       labels:
         app: cleanslate-db
     spec:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 3000
-        fsGroup: 2000
+      # securityContext:
+      #   runAsUser: 1000
+      #   runAsGroup: 3000
+      #   fsGroup: 2000
       containers:
         - name: cleanslate-db-container
           image: mariadb
+          ports:
+            - containerPort: 3306
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: cleanslate-db-storage

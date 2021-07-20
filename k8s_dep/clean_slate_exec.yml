@@ -11,7 +11,7 @@ metadata:
   name: local-db-pv
 spec:
   capacity:
-    storage: LOCAL_STORAGE_SPACE
+    storage: 8Gi
   accessModes:
   - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
@@ -132,11 +132,11 @@ metadata:
 spec:
   type: LoadBalancer
   externalIPs:
-  - EXTERNAL_IP_ADDRESS
+  - 35.161.96.173
   ports:
     - port: 80
       protocol: TCP
       targetPort: 80                    # target port where server is listening
-      nodePort: EXPOSED_PORT_NUMBER     # valid port to expose is 30k UP
+      nodePort: 30000     # valid port to expose is 30k UP
   selector:
     app: cleanslate-app
