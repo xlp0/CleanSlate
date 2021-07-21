@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cleanslate-app
+spec:
+  selector:
+    matchLabels:
+      app: cleanslate-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cleanslate-app
+    spec:
+      containers:
+        - name: cleanslate-container
+          image: mediawiki
+          volumeMounts:
+            - mountPath: /var/www/html/images
+              name: cleanslate-volume
+            - mountPath: /var/www/html/LocalSettings.php
+              name: cleanslate-localsettings
+          ports:
+            - containerPort: 80
+      volumes:
+        - name: cleanslate-volume
+        - name: cleanslate-localsettings
+          hostPath:
+            path: /home/ubuntu/mount/mountPoint/LocalSettings.php
+            type: File
