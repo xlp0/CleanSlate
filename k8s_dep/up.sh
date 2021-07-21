@@ -35,9 +35,12 @@ sed -i -e 's, EXTERNAL_IP_ADDRESS, '$EXTERNAL_IP_ADDRESS',g' clean_slate_exec.ym
 # External exposed port number
 sed -i -e 's, EXPOSED_PORT_NUMBER, '$EXPOSED_PORT_NUMBER',g' clean_slate_exec.yml
 
+# creating mount-point folder
+
+
 # create execute yaml file, overwrite if exist
 cp $LOCAL_FOLDER/LocalSettings-template.php $LOCAL_FOLDER/LocalSettings.php
 sed -e 's, SERVER_URL, "'http://$EXTERNAL_IP_ADDRESS:$EXPOSED_PORT_NUMBER'",g' $LOCAL_FOLDER/LocalSettings.php > $LOCAL_FOLDER/tmp.php && mv $LOCAL_FOLDER/tmp.php $LOCAL_FOLDER/LocalSettings.php
 
 # apply config files
-kubectl apply -f clean_slate_exec.yml
+# kubectl apply -f clean_slate_exec.yml

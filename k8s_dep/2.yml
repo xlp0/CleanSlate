@@ -10,7 +10,8 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: db-storage
   local:
-    path: /home/ubuntu/mount/mariadb
+    # path: /home/ubuntu/mount/mountPoint
+    path: /home/ubuntu/mount/mountPoint/mariadb
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -18,4 +19,4 @@ spec:
         - key: kubernetes.io/hostname
           operator: In
           values:
-          - ip-172-31-30-35
+          - w1
