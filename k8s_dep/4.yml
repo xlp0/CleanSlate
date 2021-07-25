@@ -12,15 +12,17 @@ spec:
       labels:
         app: cleanslate-db
     spec:
+      serviceAccountName: xlp-mariadb
       # securityContext:
       #   runAsUser: 1000
       #   runAsGroup: 3000
       #   fsGroup: 2000
       containers:
         - name: cleanslate-db-container
-          image: mariadb
+          image: mariadb:10.3
           ports:
             - containerPort: 3306
+          imagePullPolicy: IfNotPresent
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: cleanslate-db-storage
@@ -31,8 +33,8 @@ spec:
               value: wikiuser
             - name: MYSQL_PASSWORD
               value: example
-            - name: MYSQL_RANDOM_ROOT_PASSWORD
-              value: 'yes'
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
       volumes:
         - name: cleanslate-db-storage
           persistentVolumeClaim:

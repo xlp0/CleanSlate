@@ -11,7 +11,9 @@ spec:
   storageClassName: db-storage
   local:
     # path: /home/ubuntu/mount/mountPoint
-    path: /home/ubuntu/mount/mountPoint/mariadb
+    # path: /home/ubuntu/mount/mountPoint/mariadb
+    # path: /efs/data/xlp_k8s/mariadb
+    path: /efs/mount/mariadb
   nodeAffinity:
     required:
       nodeSelectorTerms:
