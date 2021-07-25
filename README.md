@@ -18,6 +18,10 @@ For instance, the https://roadmaps.mit.edu data content in stored in this format
  sudo ./launch.sh
 ```
 
+When <code>launch.sh</code> finishes, you also need to make sure that the <code>LocalSettings.php</code> in the <code>mountPoint</code> directory structure has the right information. If everything is properly configured, you can simply go to your web browser and it should start serving the packaged content on a freshly installed machine. 
+
+# Other Infrastructure Components
+
 For Jenkins installation, please type
 ```
  sudo ./Installation.sh
