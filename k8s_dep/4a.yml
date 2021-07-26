@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata: 
+  name: xlp-mariadb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cleanslate-db
+spec:
+  selector:
+    matchLabels:
+      app: cleanslate-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cleanslate-db
+    spec:
+      serviceAccountName: xlp-mariadb
+      # securityContext:
+      #   runAsUser: 1000
+      #   runAsGroup: 3000
+      #   fsGroup: 2000
+      containers:
+        - name: cleanslate-db-container
+          image: mariadb:10.3
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_DATABASE
+              value: my_wiki
+            - name: MYSQL_USER
+              value: wikiuser
+            - name: MYSQL_PASSWORD
+              value: example
+            - name: MYSQL_ROOT_PASSWORD
+              value: root

@@ -1,0 +1,77 @@
+# ========== mariadb ==========
+apiVersion: v1
+kind: Service
+metadata: 
+  name: mariadb
+spec:
+  type: ClusterIP
+  ports:
+  - name: mysql
+    port: 3306
+  selector:
+    type: app
+    sys: xlpsystem
+    app: mariadb
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: 
+  name: xlp-mariadb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      type: app
+      sys: xlpsystem
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        type: app
+        sys: xlpsystem
+        app: mariadb
+    spec:
+      serviceAccountName: xlp-mariadb
+      volumes:
+      - name: pv-data
+        hostPath:
+          path: /data/xlp_k8s/mariadb
+      containers:
+      - name: mariadb-container
+        image: mariadb:10.3
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: cleanslate-db-storage
+        - mountPath: /mnt/restore
+          name: cleanslate-db-restore
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MYSQL_DATABASE
+          value: my_wiki
+        - name: MYSQL_USER
+          value: wikiuser
+        - name: MYSQL_PASSWORD
+          value: example
+        - name: MYSQL_ROOT_PASSWORD
+          value: 7870A37959142A5FFC07091E112A9D31
+        resources:
+          limits:
+            cpu: 300m
+            memory: 1024Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+      volumes:
+      - name: cleanslate-db-storage
+        persistentVolumeClaim:
+          claimName: db-pv-claim
+      - name: cleanslate-db-restore
+        hostPath:
+          path: /efs/data/media
