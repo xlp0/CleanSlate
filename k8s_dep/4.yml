@@ -26,6 +26,10 @@ spec:
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: cleanslate-db-storage
+            - mountPath: /mnt/restore
+              name: db-restore
+            - mountPath: /mnt/backup
+              name: db-backup
           env:
             - name: MYSQL_DATABASE
               value: my_wiki
@@ -39,3 +43,10 @@ spec:
         - name: cleanslate-db-storage
           persistentVolumeClaim:
             claimName: db-pv-claim
+        - name: db-restore
+          hostPath: 
+            path: /efs/data/media
+        - name: db-backup
+          persistentVolumeClaim:
+            claimName: backup-db-pv-claim
+        

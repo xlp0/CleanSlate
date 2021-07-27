@@ -14,10 +14,7 @@ spec:
     spec:
       containers:
         - name: cleanslate-container
-          # image: mediawiki
-          # image: runtimeerror2/xlpmediawiki:1.33-amd64-basic
           image: xlp0/semanticwiki
-          # image: runtimeerror2/xlpmediawiki:1.33-amd64-basic
           volumeMounts:
             - mountPath: /var/www/html/images
               name: cleanslate-volume
@@ -25,6 +22,8 @@ spec:
               name: cleanslate-localsettings
             - mountPath: /var/www/html/images_restore
               name: cleanslate-restore
+            - mountPath: /var/www/html/images_backup
+              name: cleanslate-backup
           ports:
             - containerPort: 80
       volumes:
@@ -33,10 +32,11 @@ spec:
             claimName: media-pv-claim
         - name: cleanslate-localsettings
           hostPath:
-            # path: /home/ubuntu/mount/mountPoint/LocalSettings.php
-            # path: /efs/data/xlp_k8s/mediawiki/LocalSettings.php
-            path: /efs/mount/mediawiki/LocalSettings.php
+            path: /home/ubuntu/mount/LocalSettings.php
             type: File
         - name: cleanslate-restore
           hostPath:
-            path: /efs/mount/mediawiki/images_restore
+            path: /efs/mount/mediawiki/images_restore/MediaFiles
+        - name: cleanslate-backup
+          persistentVolumeClaim:
+            claimName: backup-media-pv-claim

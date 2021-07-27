@@ -1,0 +1,281 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: db-storage
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-db-pv
+spec:
+  capacity:
+    storage: 8Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: db-storage
+  local:
+    path: /home/ubuntu/mount/mariadb
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - w1
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: db-pv-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: db-storage
+  resources:
+    requests:
+      storage: 4Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: backup-db-pv
+spec:
+  capacity:
+    storage: 8Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: db-storage
+  local:
+    path: /home/ubuntu/mount/backup/mariadb
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - w1
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: backup-db-pv-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: db-storage
+  resources:
+    requests:
+      storage: 4Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: media-pv
+spec:
+  capacity:
+    storage: 8Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: db-storage
+  local:
+    path: /home/ubuntu/mount/images
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - w1
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: media-pv-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: db-storage
+  resources:
+    requests:
+      storage: 4Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: backup-media-pv
+spec:
+  capacity:
+    storage: 8Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: db-storage
+  local:
+    path: /home/ubuntu/mount/backup/images
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - w1
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: backup-media-pv-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: db-storage
+  resources:
+    requests:
+      storage: 4Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: db-pv-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: db-storage
+  resources:
+    requests:
+      storage: 4Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cleanslate-db
+spec:
+  selector:
+    matchLabels:
+      app: cleanslate-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cleanslate-db
+    spec:
+      serviceAccountName: xlp-mariadb
+      # securityContext:
+      #   runAsUser: 1000
+      #   runAsGroup: 3000
+      #   fsGroup: 2000
+      containers:
+        - name: cleanslate-db-container
+          image: mariadb:10.3
+          ports:
+            - containerPort: 3306
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: cleanslate-db-storage
+            - mountPath: /mnt/restore
+              name: db-restore
+            - mountPath: /mnt/backup
+              name: db-backup
+          env:
+            - name: MYSQL_DATABASE
+              value: my_wiki
+            - name: MYSQL_USER
+              value: wikiuser
+            - name: MYSQL_PASSWORD
+              value: example
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+      volumes:
+        - name: cleanslate-db-storage
+          persistentVolumeClaim:
+            claimName: db-pv-claim
+        - name: db-restore
+          hostPath: 
+            path: /efs/data/media
+        - name: db-backup
+          persistentVolumeClaim:
+            claimName: backup-db-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cleanslate-db-srv
+  labels:
+    app: cleanslate-db
+spec:
+  # type: NodePort
+  type: ClusterIP
+  ports:
+    - port: 3306
+      protocol: TCP
+  selector:
+    app: cleanslate-db
+  clusterIP: 10.97.75.132
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cleanslate-app
+spec:
+  selector:
+    matchLabels:
+      app: cleanslate-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cleanslate-app
+    spec:
+      containers:
+        - name: cleanslate-container
+          image: xlp0/semanticwiki
+          volumeMounts:
+            - mountPath: /var/www/html/images
+              name: cleanslate-volume
+            - mountPath: /var/www/html/LocalSettings.php
+              name: cleanslate-localsettings
+            - mountPath: /var/www/html/images_restore
+              name: cleanslate-restore
+            - mountPath: /var/www/html/images_backup
+              name: cleanslate-backup
+          ports:
+            - containerPort: 80
+      volumes:
+        - name: cleanslate-volume
+          persistentVolumeClaim:
+            claimName: media-pv-claim
+        - name: cleanslate-localsettings
+          hostPath:
+            path: /home/ubuntu/mount/LocalSettings.php
+            type: File
+        - name: cleanslate-restore
+          hostPath:
+            path: /efs/mount/mediawiki/images_restore/MediaFiles
+        - name: cleanslate-backup
+          persistentVolumeClaim:
+            claimName: backup-media-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cleanslate-srv
+  labels:
+    app: cleanslate-app
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80                    # target port where server is listening
+      nodePort: 30000                   # valid port to expose is 30k UP
+  selector:
+    app: cleanslate-app

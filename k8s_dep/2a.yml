@@ -10,7 +10,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: db-storage
   local:
-    path: /efs/mount/mediawiki/images
+    path: /home/ubuntu/mount/images
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -19,3 +19,49 @@ spec:
           operator: In
           values:
           - w1
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: media-pv-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: db-storage
+  resources:
+    requests:
+      storage: 4Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: backup-media-pv
+spec:
+  capacity:
+    storage: 8Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: db-storage
+  local:
+    path: /home/ubuntu/mount/backup/images
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - w1
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: backup-media-pv-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: db-storage
+  resources:
+    requests:
+      storage: 4Gi

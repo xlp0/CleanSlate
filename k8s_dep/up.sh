@@ -6,7 +6,6 @@ if [ -f .env ]; then
     . .env
    echo "File .env exists, below are the parameters stored"
    echo "-------------------------------------------------"
-   echo "Local Persistence volume will be mounted from: $LOCAL_FOLDER"
    echo "Space allocated for cluster is: $LOCAL_STORAGE_SPACE"
    echo "External IP Address is: $EXTERNAL_IP_ADDRESS"
    echo "External port number is: $EXPOSED_PORT_NUMBER"
@@ -25,22 +24,22 @@ fi
 # minikube start --mount --mount-string="$LOCAL_FOLDER:/home/docker/mount"
 
 # create execute yaml file, overwrite if exist
-cp clean_slate.yml clean_slate_exec.yml
+#cp clean_slate.yml clean_slate_exec.yml
 
 # Apply .env parameters into yaml file
 # amount of local storage
-sed -i -e 's, LOCAL_STORAGE_SPACE, '$LOCAL_STORAGE_SPACE',g' clean_slate_exec.yml
+#sed -i -e 's, LOCAL_STORAGE_SPACE, '$LOCAL_STORAGE_SPACE',g' clean_slate_exec.yml
 # External exposed IP address
-sed -i -e 's, EXTERNAL_IP_ADDRESS, '$EXTERNAL_IP_ADDRESS',g' clean_slate_exec.yml
+#sed -i -e 's, EXTERNAL_IP_ADDRESS, '$EXTERNAL_IP_ADDRESS',g' clean_slate_exec.yml
 # External exposed port number
-sed -i -e 's, EXPOSED_PORT_NUMBER, '$EXPOSED_PORT_NUMBER',g' clean_slate_exec.yml
+#sed -i -e 's, EXPOSED_PORT_NUMBER, '$EXPOSED_PORT_NUMBER',g' clean_slate_exec.yml
 
 # creating mount-point folder
 
 
 # create execute yaml file, overwrite if exist
-cp $LOCAL_FOLDER/LocalSettings-template.php $LOCAL_FOLDER/LocalSettings.php
-sed -e 's, SERVER_URL, "'http://$EXTERNAL_IP_ADDRESS:$EXPOSED_PORT_NUMBER'",g' $LOCAL_FOLDER/LocalSettings.php > $LOCAL_FOLDER/tmp.php && mv $LOCAL_FOLDER/tmp.php $LOCAL_FOLDER/LocalSettings.php
+#cp $LOCAL_FOLDER/LocalSettings-template.php $LOCAL_FOLDER/LocalSettings.php
+#sed -e 's, SERVER_URL, "'http://$EXTERNAL_IP_ADDRESS:$EXPOSED_PORT_NUMBER'",g' $LOCAL_FOLDER/LocalSettings.php > $LOCAL_FOLDER/tmp.php && mv $LOCAL_FOLDER/tmp.php $LOCAL_FOLDER/LocalSettings.php
 
 # apply config files
 # kubectl apply -f clean_slate_exec.yml

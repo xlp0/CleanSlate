@@ -10,10 +10,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: db-storage
   local:
-    # path: /home/ubuntu/mount/mountPoint
-    # path: /home/ubuntu/mount/mountPoint/mariadb
-    # path: /efs/data/xlp_k8s/mariadb
-    path: /efs/mount/mariadb
+    path: /home/ubuntu/mount/mariadb
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -22,3 +19,49 @@ spec:
           operator: In
           values:
           - w1
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: db-pv-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: db-storage
+  resources:
+    requests:
+      storage: 4Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: backup-db-pv
+spec:
+  capacity:
+    storage: 8Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: db-storage
+  local:
+    path: /home/ubuntu/mount/backup/mariadb
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - w1
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: backup-db-pv-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: db-storage
+  resources:
+    requests:
+      storage: 4Gi
