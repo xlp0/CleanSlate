@@ -1,0 +1,37 @@
+---
+#
+# restore volume
+#
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: restore-db-pv
+spec:
+  capacity:
+    storage: 8Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: db-storage
+  local:
+    path: /home/ubuntu/mount/restore/mariadb
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - w1
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: restore-db-pv-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: db-storage
+  resources:
+    requests:
+      storage: 4Gi

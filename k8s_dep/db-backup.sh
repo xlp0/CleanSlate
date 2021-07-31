@@ -4,6 +4,7 @@
 #
 #
 echo 'Creating backup files on /mount/backup/mariadb/'
+echo 'as cleanslate-backup.sql'
 POD=$(kubectl get pod -l app=cleanslate-db -o jsonpath="{.items[0].metadata.name}")
 echo 'Executing command on POD:' $POD
 #
