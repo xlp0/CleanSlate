@@ -44,5 +44,5 @@ kubectl exec -i $PODAPP -- /bin/bash -c "rm -rf /var/www/html/images_backup/$_no
 
 # notify
 echo "Mediafile backup on mount/backup/images/mediafile_$_now.zip is complete"
-echo "Database backup on mount/backup/mariabd/cleanslate_bak_$_now.sql.gz is complete"
+echo "Database backup on mount/backup/mariadb/cleanslate_bak_$_now.sql.gz is complete"
 

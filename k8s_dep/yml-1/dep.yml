@@ -114,7 +114,7 @@ spec:
             claimName: images-pv-claim
         - name: cleanslate-localsettings
           hostPath:
-            path: /home/ubuntu/mount/LocalSettings.php
+            path: /home/csadmin/mount/LocalSettings.php
             type: File
         - name: cleanslate-restore
           persistentVolumeClaim:
