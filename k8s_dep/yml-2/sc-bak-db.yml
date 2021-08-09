@@ -1,0 +1,40 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc-bak-db
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: backup-db-pv
+spec:
+  capacity:
+    storage: 40Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: sc-bak-db
+  local:
+    path: /home/csadmin/mount/backup/mariadb
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - worker1
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: backup-db-pv-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: sc-bak-db
+  resources:
+    requests:
+      storage: 40Gi

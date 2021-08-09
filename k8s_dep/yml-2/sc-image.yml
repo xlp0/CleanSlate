@@ -1,0 +1,40 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc-images
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: images-pv
+spec:
+  capacity:
+    storage: 40Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: sc-images
+  local:
+    path: /home/csadmin/mount/images
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - worker1
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: images-pv-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: sc-images
+  resources:
+    requests:
+      storage: 40Gi

@@ -1,0 +1,5 @@
+tolerations:
+  - key: "node-role.kubernetes.io/kmaster"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
