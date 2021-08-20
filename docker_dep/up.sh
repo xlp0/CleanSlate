@@ -47,6 +47,8 @@ fi
       fi
     done
 
+echo "Please go to a browser and use http://$HOST_STRING:$MATOMO_PORT_NUMBER to access Matomo"
+echo "Please go to a browser and use http://$HOST_STRING:$NC_PORT_NUMBER to access Nexclout"
 echo "Please go to a browser and use http://$HOST_STRING:$PORT_NUMBER to test the service"
 
 docker-compose up -d 
