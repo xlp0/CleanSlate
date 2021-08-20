@@ -9,3 +9,4 @@ PODAPP=$(kubectl get pod -l app=cleanslate-app -o jsonpath="{.items[0].metadata.
 # run update
 echo 'Run on $PODAPP'
 kubectl exec -i $PODAPP -- /bin/bash -c "php /var/www/html/maintenance/update.php --quick --force"
+# kubectl exec -i $PODAPP -- /bin/bash -c "php /var/www/html/maintenance/setupStore.php --quick --force"

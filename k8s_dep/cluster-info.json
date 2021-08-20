@@ -1,0 +1,163 @@
+2021-08-16 01:51:01 [ℹ]  eksctl version 0.61.0
+2021-08-16 01:51:01 [ℹ]  using region us-west-2
+2021-08-16 01:51:04 [ℹ]  stack/eksctl-pkc-cluster-addon-iamserviceaccount-kube-system-alb-ingress-controller = {
+  Capabilities: ["CAPABILITY_IAM"],
+  CreationTime: 2021-08-15 14:27:40.82 +0000 UTC,
+  Description: "IAM role for serviceaccount \"kube-system/alb-ingress-controller\" [created and managed by eksctl]",
+  DisableRollback: false,
+  DriftInformation: {
+    StackDriftStatus: "NOT_CHECKED"
+  },
+  EnableTerminationProtection: false,
+  Outputs: [{
+      OutputKey: "Role1",
+      OutputValue: "arn:aws:iam::055406359882:role/eksctl-pkc-cluster-addon-iamserviceaccount-k-Role1-1BHIJ8LKKAO5I"
+    }],
+  RollbackConfiguration: {
+
+  },
+  StackId: "arn:aws:cloudformation:us-west-2:055406359882:stack/eksctl-pkc-cluster-addon-iamserviceaccount-kube-system-alb-ingress-controller/f276d420-fdd4-11eb-85df-020490609721",
+  StackName: "eksctl-pkc-cluster-addon-iamserviceaccount-kube-system-alb-ingress-controller",
+  StackStatus: "CREATE_COMPLETE",
+  Tags: [
+    {
+      Key: "alpha.eksctl.io/cluster-name",
+      Value: "pkc-cluster"
+    },
+    {
+      Key: "eksctl.cluster.k8s.io/v1alpha1/cluster-name",
+      Value: "pkc-cluster"
+    },
+    {
+      Key: "alpha.eksctl.io/iamserviceaccount-name",
+      Value: "kube-system/alb-ingress-controller"
+    },
+    {
+      Key: "alpha.eksctl.io/eksctl-version",
+      Value: "0.61.0"
+    }
+  ]
+}
+2021-08-16 01:51:04 [ℹ]  stack/eksctl-pkc-cluster-nodegroup-pkc-node = {
+  Capabilities: ["CAPABILITY_IAM"],
+  CreationTime: 2021-08-15 08:58:06.055 +0000 UTC,
+  Description: "EKS Managed Nodes (SSH access: true) [created by eksctl]",
+  DisableRollback: false,
+  DriftInformation: {
+    StackDriftStatus: "NOT_CHECKED"
+  },
+  EnableTerminationProtection: false,
+  RollbackConfiguration: {
+
+  },
+  StackId: "arn:aws:cloudformation:us-west-2:055406359882:stack/eksctl-pkc-cluster-nodegroup-pkc-node/e7c7c6c0-fda6-11eb-8444-0a1df7541ad1",
+  StackName: "eksctl-pkc-cluster-nodegroup-pkc-node",
+  StackStatus: "CREATE_COMPLETE",
+  Tags: [
+    {
+      Key: "alpha.eksctl.io/cluster-name",
+      Value: "pkc-cluster"
+    },
+    {
+      Key: "alpha.eksctl.io/nodegroup-name",
+      Value: "pkc-node"
+    },
+    {
+      Key: "eksctl.cluster.k8s.io/v1alpha1/cluster-name",
+      Value: "pkc-cluster"
+    },
+    {
+      Key: "alpha.eksctl.io/nodegroup-type",
+      Value: "managed"
+    },
+    {
+      Key: "alpha.eksctl.io/eksctl-version",
+      Value: "0.61.0"
+    }
+  ]
+}
+2021-08-16 01:51:04 [ℹ]  stack/eksctl-pkc-cluster-cluster = {
+  Capabilities: ["CAPABILITY_IAM"],
+  CreationTime: 2021-08-15 08:42:35.971 +0000 UTC,
+  Description: "EKS cluster (dedicated VPC: true, dedicated IAM: true) [created and managed by eksctl]",
+  DisableRollback: false,
+  DriftInformation: {
+    StackDriftStatus: "NOT_CHECKED"
+  },
+  EnableTerminationProtection: false,
+  Outputs: [
+    {
+      ExportName: "eksctl-pkc-cluster-cluster::SubnetsPrivate",
+      OutputKey: "SubnetsPrivate",
+      OutputValue: "subnet-036f2790adf92b20d,subnet-0aeeef3a3fbc65a52,subnet-0811c51534d075d21"
+    },
+    {
+      ExportName: "eksctl-pkc-cluster-cluster::SubnetsPublic",
+      OutputKey: "SubnetsPublic",
+      OutputValue: "subnet-075fc5298dbddfc1e,subnet-0e021a2d39b23d8f0,subnet-004b812427fbc522b"
+    },
+    {
+      OutputKey: "FeatureNATMode",
+      OutputValue: "Single"
+    },
+    {
+      ExportName: "eksctl-pkc-cluster-cluster::ServiceRoleARN",
+      OutputKey: "ServiceRoleARN",
+      OutputValue: "arn:aws:iam::055406359882:role/eksctl-pkc-cluster-cluster-ServiceRole-11R04CMA4WQWC"
+    },
+    {
+      ExportName: "eksctl-pkc-cluster-cluster::Endpoint",
+      OutputKey: "Endpoint",
+      OutputValue: "https://ED2DB820B870AD5530763C39125D5862.yl4.us-west-2.eks.amazonaws.com"
+    },
+    {
+      ExportName: "eksctl-pkc-cluster-cluster::SharedNodeSecurityGroup",
+      OutputKey: "SharedNodeSecurityGroup",
+      OutputValue: "sg-05af30577350d95df"
+    },
+    {
+      ExportName: "eksctl-pkc-cluster-cluster::VPC",
+      OutputKey: "VPC",
+      OutputValue: "vpc-0b71bb8064d656c04"
+    },
+    {
+      ExportName: "eksctl-pkc-cluster-cluster::ClusterSecurityGroupId",
+      OutputKey: "ClusterSecurityGroupId",
+      OutputValue: "sg-015a359598df84879"
+    },
+    {
+      OutputKey: "ClusterStackName",
+      OutputValue: "eksctl-pkc-cluster-cluster"
+    },
+    {
+      OutputKey: "CertificateAuthorityData",
+      OutputValue: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUM1ekNDQWMrZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBREFWTVJNd0VRWURWUVFERXdwcmRXSmwKY201bGRHVnpNQjRYRFRJeE1EZ3hOVEE0TkRrek9Gb1hEVE14TURneE16QTRORGt6T0Zvd0ZURVRNQkVHQTFVRQpBeE1LYTNWaVpYSnVaWFJsY3pDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBS1o5CmVIV0NmMW5vVS82MisrOHNDRkN3OGZwSDdJL2lCOUtjM3p6bTVuU1N1OC9vd05QZW5ha05vZmw2NUxpMVRkR3gKOXpvOTNmeFBjM0NPOU1JWUxlemZIeXRDT2ZZSnhxakFpSmNTOUZQUU1mV0R2V1VmRnpDMWtBRjdZMXM2VGZyWQpYTXA4dGFSSkpOakdER3BXVWZRT3RDQ2pkVWJsTGhERHNwY0M2Q1MyeXowRHpBSTdxbDg2S3V4L1ZYYm5ybzl4ClZZaXlDSG9oYU9VcDh2Z1ZTdUxiSVRhbmVzNTFaUjdDTTJzTndSaWREMDl0b1FpUXRWMjFOQ2NGbzFPLzdwTDIKd1hyRTFidzgrM2wySU5MckR3a1A5VVJNOFJwQnV2bGxMWC9hRFppTjdHNVExdVFoTEdxVHZsZCs1eVA0MEk5OQpoZ2ZmQldiRXRONzc2Wit1dFYwQ0F3RUFBYU5DTUVBd0RnWURWUjBQQVFIL0JBUURBZ0trTUE4R0ExVWRFd0VCCi93UUZNQU1CQWY4d0hRWURWUjBPQkJZRUZIOXNHTHN4Rll4c3pWN1J3M1N5STVac0laT0ZNQTBHQ1NxR1NJYjMKRFFFQkN3VUFBNElCQVFDU2RNQVBtb0JDY041cFllTlorNkN5UWZOUDhvRWRaait6cmNEaCtxK0g0cXQwZVhOSQowa3pZMklxbWd0ck95bWdTQ2Nudm9ZZ2NDZlBHY0xIdXcwa21FdEtkdW9UK1orZTArcGZGTlJPSGpENFlUZ2RBCklCME94R2U4MHUwMTA1dmNTUzZIam91a3B0dnNPWmFXTmZZSWZxZFFqc045VzNYSUx2UzhON1dxcDVFMjZOYXcKNWNOQ0V2bXNwM1NwT1NBUGQ1eHY4Y3pjUXVzSVZuSkl3WmhESDJqditITFFZWXlUQXlVM2p6S1ZNZDB2eUNKUwpVbkdCUlg2UVRDd1BaWDI2bjB2dXhQUXdIRUNWMm5lOTNxd0Y4bWVWSmthcEZZeUVHSGs4RVR2Vzc4VnJMTDQ5CnJCZWdDeEtUUStoVXcxTmNoOHhxU1BLanpMc0Q3ZFZVUXhUOQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg=="
+    },
+    {
+      ExportName: "eksctl-pkc-cluster-cluster::SecurityGroup",
+      OutputKey: "SecurityGroup",
+      OutputValue: "sg-090070ad48a3203a4"
+    },
+    {
+      ExportName: "eksctl-pkc-cluster-cluster::ARN",
+      OutputKey: "ARN",
+      OutputValue: "arn:aws:eks:us-west-2:055406359882:cluster/pkc-cluster"
+    }
+  ],
+  RollbackConfiguration: {
+
+  },
+  StackId: "arn:aws:cloudformation:us-west-2:055406359882:stack/eksctl-pkc-cluster-cluster/bd650430-fda4-11eb-9b7d-0656ffffeb79",
+  StackName: "eksctl-pkc-cluster-cluster",
+  StackStatus: "CREATE_COMPLETE",
+  Tags: [{
+      Key: "alpha.eksctl.io/cluster-name",
+      Value: "pkc-cluster"
+    },{
+      Key: "eksctl.cluster.k8s.io/v1alpha1/cluster-name",
+      Value: "pkc-cluster"
+    },{
+      Key: "alpha.eksctl.io/eksctl-version",
+      Value: "0.61.0"
+    }]
+}

@@ -25,7 +25,7 @@ echo "Creating database backup files on $_file"
 POD=$(kubectl get pod -l app=cleanslate-db -o jsonpath="{.items[0].metadata.name}")
 echo 'Executing command on POD:' $POD
 #
-kubectl exec -i $POD -- /bin/bash -c "mysqldump -h 127.0.0.1 -u root -proot --all-databases | gzip -c > /mnt/backup/$_filename"
+kubectl exec -i $POD -- /bin/bash -c "mysqldump -h 127.0.0.1 -u root -proot --all-databases --skip-lock-table | gzip -c > /mnt/backup/$_filename"
 #
 # create temporary folder
 PODAPP=$(kubectl get pod -l app=cleanslate-app -o jsonpath="{.items[0].metadata.name}")

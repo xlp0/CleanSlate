@@ -1,0 +1,144 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: db-storage
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-db-pv
+spec:
+  capacity:
+    storage: 8Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: db-storage
+  local:
+    # path: /home/ubuntu/mount/mountPoint
+    path: /home/ubuntu/mount/mountPoint/mariadb   # []/mountPoint/mariadb
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - w1                                    # workers node name
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: db-pv-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: db-storage
+  resources:
+    requests:
+      storage: 4Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cleanslate-db
+spec:
+  selector:
+    matchLabels:
+      app: cleanslate-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cleanslate-db
+    spec:
+      # securityContext:
+      #   runAsUser: 1000
+      #   runAsGroup: 3000
+      #   fsGroup: 2000
+      containers:
+        - name: cleanslate-db-container
+          image: mariadb
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: cleanslate-db-storage
+          env:
+            - name: MYSQL_DATABASE
+              value: my_wiki
+            - name: MYSQL_USER
+              value: wikiuser
+            - name: MYSQL_PASSWORD
+              value: example
+            - name: MYSQL_RANDOM_ROOT_PASSWORD
+              value: 'yes'
+      volumes:
+        - name: cleanslate-db-storage
+          persistentVolumeClaim:
+            claimName: db-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cleanslate-db-srv
+  labels:
+    app: cleanslate-db
+spec:
+  # type: NodePort
+  type: ClusterIP
+  ports:
+    - port: 3306
+      protocol: TCP
+  selector:
+    app: cleanslate-db
+  clusterIP: 10.97.75.132
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cleanslate-app
+spec:
+  selector:
+    matchLabels:
+      app: cleanslate-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cleanslate-app
+    spec:
+      containers:
+        - name: cleanslate-container
+          image: mediawiki
+          volumeMounts:
+            - mountPath: /var/www/html/images
+              name: cleanslate-volume
+            - mountPath: /var/www/html/LocalSettings.php
+              name: cleanslate-localsettings
+          ports:
+            - containerPort: 80
+      volumes:
+        - name: cleanslate-volume
+        - name: cleanslate-localsettings
+          hostPath:
+            path: /home/ubuntu/mount/mountPoint/LocalSettings.php
+            type: File
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cleanslate-srv
+  labels:
+    app: cleanslate-app
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80      # target port where server is listening
+      nodePort: 30000     # valid port to expose is 30k UP
+  selector:
+    app: cleanslate-app
