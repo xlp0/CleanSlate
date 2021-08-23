@@ -19,6 +19,7 @@ services:
     #ports: 
     # - 3306:3306
   mediawiki:
+    # default username/password: admin/admin_on_d0cker
     image: mediawiki
     platform: linux/amd64
     restart: always
@@ -33,12 +34,12 @@ services:
     # the installation person from a browser, the system will generate a LocalSettings.php, and it should be placed in /var/www/html/.
     # For convenience, the following long line is a reminder for the procedure: It is recommended to comment out the following line 
     # when first install a "fresh" instance of MediaWiki. This statement exclude the situation when one just want to use the default mountPoint content as the fresh data set.
-    - ./LocalSettings.php:/var/www/html/LocalSettings.php
+    - ./mountPoint/LocalSettings.php:/var/www/html/LocalSettings.php
     - ./backup/xml:/var/www/html/backup
     depends_on:
     - database
   matomo:
-    # default username / password: matomo / bitnami
+    # default username/password: user/bitnami
     image: docker.io/bitnami/matomo:4
     ports:
     - ${MATOMO_PORT_NUMBER}:8080
@@ -51,14 +52,14 @@ services:
     - MATOMO_DATABASE_PASSWORD=secret
     - ALLOW_EMPTY_PASSWORD=no
     volumes:
-    - "./mountPoint/matomo:/bitnami/matomo"
+    - "./matomo:/bitnami/matomo"
     depends_on:
     - database
     links:
     - database
   nextcloud:
     # default username/pass: admin/admin_on_d0cker
-    image: nextcloud:22.1.0
+    image: nextcloud:21.0.0
     ports:
     - ${NC_PORT_NUMBER}:80
     depends_on:
@@ -66,7 +67,7 @@ services:
     links:
     - database
     volumes:
-    - ./mountPoint/nextcloud:/var/www/html
+    - ./nextcloud:/var/www/html
     - ./app/config:/var/www/html/config
     - ./app/custom_apps:/var/www/html/custom_apps
     - ./app/data:/var/www/html/data

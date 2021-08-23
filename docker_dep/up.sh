@@ -25,7 +25,7 @@ fi
 # Localhost configuration based on .env
     # Substitute to correct config if founded "$TargetKey =" in LocalSetting.php
     # Only replace 'var' instead of "var" 
-    LOCALSETTINGS_FILENAME="LocalSettings.php"
+    LOCALSETTINGS_FILENAME="./mountPoint/LocalSettings.php"
     # Put in all the params for configuration
     key_array=(
       "wgServer"
@@ -48,7 +48,7 @@ fi
     done
 
 echo "Please go to a browser and use http://$HOST_STRING:$MATOMO_PORT_NUMBER to access Matomo"
-echo "Please go to a browser and use http://$HOST_STRING:$NC_PORT_NUMBER to access Nexclout"
-echo "Please go to a browser and use http://$HOST_STRING:$PORT_NUMBER to test the service"
+echo "Please go to a browser and use http://$HOST_STRING:$NC_PORT_NUMBER to access NextCloud"
+echo "Please go to a browser and use http://$HOST_STRING:$PORT_NUMBER to test the WikiMedia"
 
 docker-compose up -d 
