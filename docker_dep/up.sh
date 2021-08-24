@@ -1,6 +1,4 @@
 #! /bin/bash
-
-
 # In case, there is no .env file
 PORT_NUMBER="9352"
 
@@ -47,7 +45,12 @@ fi
       fi
     done
 
-echo "Please go to a browser and use http://$HOST_STRING:$MATOMO_PORT_NUMBER to access Matomo"
+# read -p "Please review the parameter and Press any key to continue or ctrl-C to cancel"
+
+echo 'Preparing mountPoint folder'
+tar -xzvf mountPoint.tar.gz
+
+echo "Please go to a browser and use http://$HOST_STRING:$MATOMO_PORT_NUMBER to access Matomo" 
 echo "Please go to a browser and use http://$HOST_STRING:$PORT_NUMBER to test the WikiMedia"
 
 docker-compose up -d 
