@@ -48,7 +48,6 @@ fi
     done
 
 echo "Please go to a browser and use http://$HOST_STRING:$MATOMO_PORT_NUMBER to access Matomo"
-echo "Please go to a browser and use http://$HOST_STRING:$NC_PORT_NUMBER to access NextCloud"
 echo "Please go to a browser and use http://$HOST_STRING:$PORT_NUMBER to test the WikiMedia"
 
 docker-compose up -d 
