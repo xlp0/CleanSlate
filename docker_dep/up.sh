@@ -48,9 +48,14 @@ fi
 # read -p "Please review the parameter and Press any key to continue or ctrl-C to cancel"
 
 echo 'Preparing mountPoint folder'
-tar -xzvf mountPoint.tar.gz
+# tar -xzvf mountPoint.tar.gz
 
 echo "Please go to a browser and use http://$HOST_STRING:$MATOMO_PORT_NUMBER to access Matomo" 
 echo "Please go to a browser and use http://$HOST_STRING:$PORT_NUMBER to test the WikiMedia"
 
-docker-compose up -d 
+docker-compose up -d
+# run this command after everything
+# php /var/www/html/maintenance/update.php --quick
+docker exec -d xlp_mediawiki php /var/www/html/maintenance/update.php --quick 
+docker exec -d xlp_mediawiki php /var/www/html/maintenance/rebuildrecentchanges.php
+docker exec -d xlp_mediawiki php /var/www/html/maintenance/initSiteStats.php

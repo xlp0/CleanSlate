@@ -3,9 +3,12 @@ version: "3.7"
 services:
   database:
     image: mariadb
+    container_name: xlp_mariadb
+    #image: xlp0/mariadb
     platform: linux/amd64
     restart: always
     command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-read-only-compressed=OFF
+    #command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-force-recovery=1
     environment:
       #entrypoint: mysqld_safe --skip-grant-tables --user=root
       MYSQL_DATABASE: my_wiki
@@ -13,22 +16,37 @@ services:
       MYSQL_PASSWORD: example
       MYSQL_ROOT_PASSWORD: secret
     volumes:
+      # data file location
       - ./mountPoint/mariadb:/var/lib/mysql
-      - ./backup/mariadb:/home/
+      # restore file location
+      - ./mountPoint/restore/mariadb:/mnt/restore
+      # backup file location
+      - ./mountPoint/backup/mariadb:/mnt/backup
+    #  - /Users/muhammadhaviz/Documents/pkc-project/thewiki/mariadb:/var/lib/mysql
+    #  - /Users/muhammadhaviz/Documents/pkc-project/xlp/mariadb:/var/lib/mysql
+    #  - /Users/muhammadhaviz/Documents/pkc-project/xlp-mount/mariadb:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
     #ports: 
     # - 3306:3306
   mediawiki:
     # default username/password: admin/admin_on_d0cker
-    image: mediawiki
+    # image: mediawiki
+    image: xlp0/semanticwiki
+    container_name: xlp_mediawiki
+    # image: xlp0/semanticwiki.smw
     platform: linux/amd64
     restart: always
-    ports:
+    ports:    
     - ${PORT_NUMBER}:80
     links:
     - database
     volumes:
+    # images file location
     - ./mountPoint/images:/var/www/html/images
+    # restore file location
+    - ./mountPoint/restore/images:/mnt/restore/images
+    # backup file location
+    - ./mountPoint/backup/images:/mnt/backup/images
     # Following the default MediaWiki installation process, it will first assume that there is no LocalSettings.php in the 
     # default location, in this case, /var/www/html/. However, after going through the installation procedure that collects information from 
     # the installation person from a browser, the system will generate a LocalSettings.php, and it should be placed in /var/www/html/.
@@ -41,6 +59,7 @@ services:
   matomo:
     # default username/password: user/bitnami
     image: docker.io/bitnami/matomo:4
+    container_name: xlp_matomo
     ports:
     - ${MATOMO_PORT_NUMBER}:8080
     - "443:8443"
@@ -57,5 +76,3 @@ services:
     - database
     links:
     - database
-      
-  
