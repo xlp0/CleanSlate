@@ -11,13 +11,13 @@ metadata:
   name: local-db-pv
 spec:
   capacity:
-    storage: 40Gi
+    storage: 4Gi
   accessModes:
   - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: db-storage
   local:
-    path: /home/csadmin/mount/mariadb
+    path: /home/ubuntu/mount/mariadb
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -37,4 +37,4 @@ spec:
   storageClassName: db-storage
   resources:
     requests:
-      storage: 40Gi
+      storage: 4Gi

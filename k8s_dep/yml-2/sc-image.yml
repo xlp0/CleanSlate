@@ -11,13 +11,13 @@ metadata:
   name: images-pv
 spec:
   capacity:
-    storage: 40Gi
+    storage: 4Gi
   accessModes:
   - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: sc-images
   local:
-    path: /home/csadmin/mount/images
+    path: /home/ubuntu/mount/images
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -37,4 +37,4 @@ spec:
   storageClassName: sc-images
   resources:
     requests:
-      storage: 40Gi
+      storage: 4Gi

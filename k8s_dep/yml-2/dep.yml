@@ -79,7 +79,7 @@ spec:
   selector:
     matchLabels:
       app: cleanslate-app
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -114,7 +114,7 @@ spec:
             claimName: images-pv-claim
         - name: cleanslate-localsettings
           hostPath:
-            path: /home/csadmin/mount/LocalSettings.php
+            path: /home/ubuntu/mount/LocalSettings.php
             type: File
         - name: cleanslate-restore
           persistentVolumeClaim:
@@ -130,7 +130,8 @@ metadata:
   labels:
     app: cleanslate-app
 spec:
-  type: NodePort
+  #type: NodePort
+  type: LoadBalancer
   ports:
     - port: 80
       protocol: TCP

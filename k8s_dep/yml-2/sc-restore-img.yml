@@ -11,13 +11,13 @@ metadata:
   name: restore-img-pv
 spec:
   capacity:
-    storage: 40Gi
+    storage: 4Gi
   accessModes:
   - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   storageClassName: sc-restore-img
   local:
-    path: /home/csadmin/mount/restore/images         # parameter
+    path: /home/ubuntu/mount/restore/images         # parameter
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -37,4 +37,4 @@ spec:
   storageClassName: sc-restore-img
   resources:
     requests:
-      storage: 40Gi
+      storage: 4Gi
