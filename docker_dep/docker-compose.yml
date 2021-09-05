@@ -76,3 +76,22 @@ services:
     - database
     links:
     - database
+  nextcloud:
+    # default username/pass: admin/admin_on_d0cker
+    image: nextcloud:22.1.0
+    ports:
+    - ${NC_PORT_NUMBER}:80
+    depends_on:
+    - database
+    links:
+    - database
+    volumes:
+    - ./mountPoint/nextcloud:/var/www/html
+    - ./app/config:/var/www/html/config
+    - ./app/custom_apps:/var/www/html/custom_apps
+    - ./app/data:/var/www/html/data
+    - ./app/themes:/var/www/html/themes
+    - /etc/localtime:/etc/localtime:ro
+    environment:
+    - VIRTUAL_HOST=nextcloud.${YOUR_DOMAIN}
+    restart: unless-stopped
