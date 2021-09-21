@@ -85,3 +85,24 @@ services:
      - ${PHP_MA}:80
     volumes:
      - /sessions
+  gitea:
+    image: gitea/gitea:1.15.2
+    container_name: xlp_gitea
+    environment:
+    - USER_UID=1000
+    - USER_GID=1000
+    - GITEA__database__DB_TYPE=mysql
+    - GITEA__database__HOST=database:3306
+    - GITEA__database__NAME=gitea
+    - GITEA__database__USER=gitea
+    - GITEA__database__PASSWD=gitea-pass
+    restart: always
+    volumes:
+    - ./mountpoint/gitea:/data
+    - /etc/timezone:/etc/timezone:ro
+    - /etc/localtime:/etc/localtime:ro
+    ports:
+    - ${GITEA_PORT_NUMBER}:3000
+    - "222:22"
+    depends_on:
+    - database
