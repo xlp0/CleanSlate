@@ -249,9 +249,6 @@ $CONFIG = [
 /**
  * The lifetime of a session after inactivity.
  *
- * The maximum possible time is limited by the session.gc_maxlifetime php.ini setting
- * which would overwrite this option if it is less than the value in the config.php
- *
  * Defaults to ``60*60*24`` seconds (24 hours)
  */
 'session_lifetime' => 60 * 60 * 24,
@@ -309,15 +306,6 @@ $CONFIG = [
 'auth.webauthn.enabled' => true,
 
 /**
- * By default the login form is always available. There are cases (SSO) where an
- * admin wants to avoid users entering their credentials to the system if the SSO
- * app is unavailable.
- *
- * This will show an error. But the the direct login still works with adding ?direct=1
- */
-'hide_login_form' => false,
-
-/**
  * The directory where the skeleton files are located. These files will be
  * copied to the data directory of new users. Leave empty to not copy any
  * skeleton files.
@@ -342,7 +330,7 @@ $CONFIG = [
  * ``skeletondirectory`` is defined, otherwise the shipped templates will be used
  * to create a template directory for the user.
  */
-'templatedirectory' => '/path/to/nextcloud/templates',
+'templatesdirectory' => '/path/to/nextcloud/templates',
 
 /**
  * If your user backend does not allow password resets (e.g. when it's a
@@ -1058,7 +1046,6 @@ $CONFIG = [
  * concerns:
  *
  *  - OC\Preview\Illustrator
- *  - OC\Preview\HEIC
  *  - OC\Preview\Movie
  *  - OC\Preview\MSOffice2003
  *  - OC\Preview\MSOffice2007
@@ -1076,6 +1063,7 @@ $CONFIG = [
  *
  *  - OC\Preview\BMP
  *  - OC\Preview\GIF
+ *  - OC\Preview\HEIC
  *  - OC\Preview\JPEG
  *  - OC\Preview\MarkDown
  *  - OC\Preview\MP3
@@ -1089,6 +1077,7 @@ $CONFIG = [
 	'OC\Preview\PNG',
 	'OC\Preview\JPEG',
 	'OC\Preview\GIF',
+	'OC\Preview\HEIC',
 	'OC\Preview\BMP',
 	'OC\Preview\XBitmap',
 	'OC\Preview\MP3',
@@ -1221,25 +1210,13 @@ $CONFIG = [
  * For enhanced security it is recommended to configure Redis
  * to require a password. See http://redis.io/topics/security
  * for more information.
- * 
- * We also support redis SSL/TLS encryption as of version 6.
- * See https://redis.io/topics/encryption for more information.
  */
 'redis' => [
 	'host' => 'localhost', // can also be a unix domain socket: '/tmp/redis.sock'
 	'port' => 6379,
 	'timeout' => 0.0,
-	'read_timeout' => 0.0,
-	'user' =>  '', // Optional, if not defined no password will be used.
 	'password' => '', // Optional, if not defined no password will be used.
 	'dbindex' => 0, // Optional, if undefined SELECT will not run and will use Redis Server's default DB Index.
-	// If redis in-transit encryption is enabled, provide certificates
-	// SSL context https://www.php.net/manual/en/context.ssl.php
-	'ssl_context' => [
-		'local_cert' => '/certs/redis.crt',
-		'local_pk' => '/certs/redis.key',
-		'cafile' => '/certs/ca.crt'
-	]
 ],
 
 /**
@@ -1275,15 +1252,7 @@ $CONFIG = [
 	'timeout' => 0.0,
 	'read_timeout' => 0.0,
 	'failover_mode' => \RedisCluster::FAILOVER_ERROR,
-	'user' =>  '', // Optional, if not defined no password will be used.
 	'password' => '', // Optional, if not defined no password will be used.
-	// If redis in-transit encryption is enabled, provide certificates
-	// SSL context https://www.php.net/manual/en/context.ssl.php
-	'ssl_context' => [
-		'local_cert' => '/certs/redis.crt',
-		'local_pk' => '/certs/redis.key',
-		'cafile' => '/certs/ca.crt'
-	]
 ],
 
 
@@ -1567,7 +1536,7 @@ $CONFIG = [
 /**
  * Override where Nextcloud stores temporary files. Useful in situations where
  * the system temporary directory is on a limited space ramdisk or is otherwise
- * restricted, or if external storage which do not support streaming are in
+ * restricted, or if external storages which do not support streaming are in
  * use.
  *
  * The Web server user must have write access to this directory.
@@ -1646,15 +1615,10 @@ $CONFIG = [
 'theme' => '',
 
 /**
- * The default cipher for encrypting files. Currently supported are:
- *  - AES-256-CTR
- *  - AES-128-CTR
- *  - AES-256-CFB
- *  - AES-128-CFB
- *
- * Defaults to ``AES-256-CTR``
+ * The default cipher for encrypting files. Currently AES-128-CFB and
+ * AES-256-CFB are supported.
  */
-'cipher' => 'AES-256-CTR',
+'cipher' => 'AES-256-CFB',
 
 /**
  * The minimum Nextcloud desktop client version that will be allowed to sync with
@@ -1701,7 +1665,7 @@ $CONFIG = [
 /**
  * Specifies how often the local filesystem (the Nextcloud data/ directory, and
  * NFS mounts in data/) is checked for changes made outside Nextcloud. This
- * does not apply to external storage.
+ * does not apply to external storages.
  *
  * 0 -> Never check the filesystem for outside changes, provides a performance
  * increase when it's certain that no changes are made directly to the

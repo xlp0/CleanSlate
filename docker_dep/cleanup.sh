@@ -3,8 +3,8 @@
 #
 # nextcloud
 # remove all entry on ./app
-rm -rf ./app/*
-rm -rf ./mountPoint/nextcloud/*
+# rm -rf ./app/*
+# rm -rf ./mountPoint/nextcloud/*
 #
 # matomo
 # 
