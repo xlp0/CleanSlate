@@ -1,0 +1,23 @@
+---
+- name: up and running docker containers
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: Upload scripts
+    copy:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      remote_src: false
+      mode: a+x
+    loop:
+      - {src: './script/cs-backup.sh', dest: './cs/cs-backup.sh'}
+      - {src: './script/cs-restore.sh', dest: './cs/cs-restore.sh'}
+      - {src: './script/update-sw.sh', dest: './cs/update-sw.sh'}
+    become: true
+  
+  - name: run update script
+    ansible.builtin.shell: ./cs/update-sw.sh
+    become: yes
+    args:
+      warn: no
