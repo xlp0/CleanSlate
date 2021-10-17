@@ -1,6 +1,6 @@
 # To run .... 
 # ansible-playbook -i hosts cs-restore.yml --extra-vars "dbname=backup-20211003.sql.gz imagename=backup-image-20211003.tar.gz"
-# ansible-playbook -i hosts cs-restore.yml --extra-vars "dbname=backup-db.sql.zip imagename=backup-image-20211003.tar.gz"
+# ansible-playbook -i hosts cs-restore.yml --extra-vars "./downloaded/dbname=backup-db.sql.zip imagename=./downloaded/backup-image-20211003.tar.gz"
 #
 ---
 - name: Restore database and image backup
