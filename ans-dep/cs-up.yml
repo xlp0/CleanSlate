@@ -8,7 +8,6 @@
     apt:
       update_cache: yes
       cache_valid_time: 3600
-
 #
 # NGINX Configuration files
 #
@@ -27,6 +26,7 @@
       - {src: './config/mtm.conf', dest: '/etc/nginx/sites-enabled/mtm.conf'}
       - {src: './config/pkc.conf', dest: '/etc/nginx/sites-enabled/pkc.conf'}
       - {src: './config/pma.conf', dest: '/etc/nginx/sites-enabled/pma.conf'}
+      - {src: './config/vs.conf', dest: '/etc/nginx/sites-enabled/vs.conf'}
       - {src: './config/reverse-proxy.conf', dest: '/etc/nginx/sites-enabled/reverse-proxy.conf'}
     become: true
 
@@ -89,6 +89,8 @@
       src: "{{ item.src }}"
       dest: "{{ item.dest }}"
       remote_src: false
+      mode: u=rwx,g=rx,o=rx
+
     loop:
       - {src: './script/cs-backup.sh', dest: './cs/cs-backup.sh'}
       - {src: './script/cs-restore.sh', dest: './cs/cs-restore.sh'}
@@ -98,7 +100,24 @@
   - name: Extract mountpoint.tar.gz
     ansible.builtin.unarchive:
       src: ./mountpoint.tar.gz
-      dest: /home/ubuntu/cs
+      dest: "{{ ansible_env.PWD }}/cs"
+
+  - name: Upload LocalSettings.php
+    copy:
+      src: "./config/LocalSettings.php"
+      dest: "./cs/mountpoint"
+      remote_src: false
+
+  - name: copy Application Configuration Files
+    copy:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      remote_src: false
+    loop:
+      - {src: "./config/LocalSettings.php", dest: './cs/mountpoint'}
+      - {src: './config/config.ini.php', dest: './cs/mountpoint/matomo/config'}
+    become: true
+    
 #
 # User data management
 #
@@ -133,3 +152,6 @@
     community.docker.docker_compose:
       project_src: cs
     register: output
+
+  - name: Execute the update script 
+    command: "sh {{ ansible_env.PWD }}/cs/update-sw.sh"

@@ -6,13 +6,14 @@
 ## Output command usage
 function usage {
     local NAME=$(basename $0)
-    echo "Usage: $NAME -m dir -d dir -i dir"
+    echo "Usage: $NAME -m dir -d file -i file"
     echo "       -m <dir>    path to mountpoint folder, of Cleanslate docker implementation, Required"
     echo "       -d <file>   backup database file, stored in ./mountpoint/backup_restore/mariadb folder, Optional."
     echo "       -i <file>   backup image file, storoed in ./mountpoint/backup_restore/mediawiki folder, Optional."
     echo "       -l          list the available file in backup_restore folder"
     echo ""
     echo "You can restore database, images, or both. Script will process supplied file"
+    ## ./cs-restore.sh -m ./mountpoint -d backup-20211003.sql.gz -i backup-image-20211003.tar.gz
 }
 ################################################################################
 ## Get and validate CLI options

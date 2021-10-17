@@ -8,9 +8,7 @@ services:
     # platform: linux/amd64
     restart: always
     command: --transaction-isolation=READ-COMMITTED --log-bin=ROW
-    #command: --transaction-isolation=READ-COMMITTED --log-bin=ROW --innodb-force-recovery=1
     environment:
-      #entrypoint: mysqld_safe --skip-grant-tables --user=root
       MYSQL_DATABASE: my_wiki
       MYSQL_USER: wikiuser
       MYSQL_PASSWORD: example
@@ -39,11 +37,7 @@ services:
     - ./mountpoint/images:/var/www/html/images
     # backup and restore file location
     - ./mountpoint/backup_restore/mediawiki:/mnt/backup_restore/mediawiki
-    # Following the default MediaWiki installation process, it will first assume that there is no LocalSettings.php in the 
-    # default location, in this case, /var/www/html/. However, after going through the installation procedure that collects information from 
-    # the installation person from a browser, the system will generate a LocalSettings.php, and it should be placed in /var/www/html/.
-    # For convenience, the following long line is a reminder for the procedure: It is recommended to comment out the following line 
-    # when first install a "fresh" instance of MediaWiki. This statement exclude the situation when one just want to use the default mountPoint content as the fresh data set.
+    # Localsettings location file
     - ./mountpoint/LocalSettings.php:/var/www/html/LocalSettings.php
     - ./backup/xml:/var/www/html/backup
     depends_on:
@@ -52,8 +46,6 @@ services:
     # default username/password: user/bitnami
     image: docker.io/bitnami/matomo:4
     user: root
-    # image: matomo:4.4.1-fpm
-    # image: matomo:4.4.1-apache
     container_name: xlp_matomo
     ports:
     - ${MATOMO_PORT_NUMBER}:8080
@@ -107,3 +99,16 @@ services:
     - "222:22"
     depends_on:
     - database
+  code-server:
+    image: lscr.io/linuxserver/code-server
+    container_name: xlp_vs
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - PASSWORD=${VS_PASSWORD} #optional
+      - SUDO_PASSWORD=${VS_SUDO_PASSWORD} #optional
+    volumes:
+      - ./mountpoint/vs:/config
+    ports:
+      - ${VS_PORT_NUMBER}:8443
+    restart: unless-stopped

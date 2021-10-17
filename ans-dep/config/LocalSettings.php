@@ -29,7 +29,7 @@ $wgSitename = "PKC Media Wiki";
 $wgScriptPath = "";
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = "http://www.pkc-dev.org";
+$wgServer = "https://www.pkc-dev.org";
 
 ## The URL path to static resources (images, scripts, etc.)
 $wgResourceBasePath = $wgScriptPath;
@@ -259,7 +259,7 @@ function onBeforePageDisplay( OutputPage &$out, Skin &$skin )
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   (function() {
-    var u='mtm.pkc-dev.org';
+    var u='//mtm.pkc-dev.org/';
     _paq.push(['setTrackerUrl', u+'matomo.php']);
     _paq.push(['setSiteId', '1']);
     var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
@@ -294,12 +294,12 @@ wfLoadExtension( 'MW-OAuth2Client' );
 $wgOAuth2Client['client']['id'] = "588891bd88bff5e1576b";
 $wgOAuth2Client['client']['secret'] = "fb049711254297b6293c96afb3bba8ad5754ce1d";
 
-$wgOAuth2Client['configuration']['authorize_endpoint']     = 'https://github.com/login/oauth/authorize'; // Authorization URL
+$wgOAuth2Client['configuration']['authorize_endpoint']     = 'https://github.com/login/oauth/authorize';    // Authorization URL
 $wgOAuth2Client['configuration']['access_token_endpoint']  = 'https://github.com/login/oauth/access_token'; // Token URL
-$wgOAuth2Client['configuration']['api_endpoint']           = 'https://api.github.com/user'; // URL to fetch user JSON
-$wgOAuth2Client['configuration']['redirect_uri'] = "https://www.pkc.pub/index.php/Special:OAuth2Client/callback";
+$wgOAuth2Client['configuration']['api_endpoint']           = 'https://api.github.com/user';                 // URL to fetch user JSON
+$wgOAuth2Client['configuration']['redirect_uri'] = "https://www.pkc-dev.org/index.php/Special:OAuth2Client/callback";
 $wgOAuth2Client['configuration']['username'] = 'login'; // JSON path to username
-$wgOAuth2Client['configuration']['email'] = 'email'; // JSON path to email
+$wgOAuth2Client['configuration']['email'] = 'email';    // JSON path to email
 $wgOAuth2Client['configuration']['scopes'] = 'openid email profile'; //Permissions
 $wgOAuth2Client['configuration']['service_name'] = 'Oauth Registry'; // the name of your service
 $wgOAuth2Client['configuration']['service_login_link_text'] = 'Login through Github'; // the text of the login link

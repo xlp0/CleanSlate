@@ -7,7 +7,7 @@
 function usage {
     local NAME=$(basename $0)
     echo "Usage: $NAME -d dir -w dir [-s] [-p prefix]"
-    echo "       -d <dir>    Path to the destination backup directory. Required."
+    echo "       -w <dir>    Path to the destination backup directory. Required."
     echo "       -s          Create a single archive file instead of three"
     echo "                   (images, database, and XML). Optional."
     echo "       -p <prefix> Prefix for the resulting archive file name(s)."

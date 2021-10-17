@@ -106,3 +106,16 @@ services:
     - "222:22"
     depends_on:
     - database
+  code-server:
+    image: lscr.io/linuxserver/code-server
+    container_name: xlp_vs
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - PASSWORD=xlp_vs #optional
+      - SUDO_PASSWORD=password #optional
+    volumes:
+      - ./mountpoint/vs/config:/config
+    ports:
+      - ${VS_PORT_NUMBER}:8443
+    restart: unless-stopped
