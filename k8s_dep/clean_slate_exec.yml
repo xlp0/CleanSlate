@@ -11,7 +11,11 @@ metadata:
   name: local-db-pv
 spec:
   capacity:
+<<<<<<< HEAD
     storage: 8Gi
+=======
+    storage: 1Gi
+>>>>>>> e66b654 (Commited local changes)
   accessModes:
   - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
@@ -132,7 +136,11 @@ metadata:
 spec:
   type: LoadBalancer
   externalIPs:
+<<<<<<< HEAD
   - 52.12.163.222
+=======
+  - 192.168.1.16
+>>>>>>> e66b654 (Commited local changes)
   ports:
     - port: 80
       protocol: TCP

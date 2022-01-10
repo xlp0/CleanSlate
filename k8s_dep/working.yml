@@ -17,8 +17,12 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: db-storage
   local:
+<<<<<<< HEAD:k8s_dep/working.yml
     # path: /home/ubuntu/mount/mountPoint
     path: /home/ubuntu/mount/mountPoint/mariadb
+=======
+    path: /home/ubuntu/mount/mariadb
+>>>>>>> e66b654 (Commited local changes):k8s_dep/clean_slate_exec.yml-e
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -124,7 +128,11 @@ spec:
         - name: cleanslate-volume
         - name: cleanslate-localsettings
           hostPath:
+<<<<<<< HEAD:k8s_dep/working.yml
             path: /home/ubuntu/mount/mountPoint/LocalSettings.php
+=======
+            path: /home/ubuntu/mount/LocalSettings.php
+>>>>>>> e66b654 (Commited local changes):k8s_dep/clean_slate_exec.yml-e
             type: File
 ---
 apiVersion: v1
